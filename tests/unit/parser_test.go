@@ -18,15 +18,15 @@ func TestParseCSV(t *testing.T) {
 		{
 			name: "valid CSV data",
 			input: `日付,入口IC,出口IC,路線,車種,金額,カード番号
-2024-01-01,東京IC,横浜IC,東名高速,普通車,1500,1234567890
-2024-01-02,名古屋IC,大阪IC,名神高速,大型車,3000,0987654321`,
+2024-01-01,東京IC,横浜IC,東名高速,1,1500,1234567890
+2024-01-02,名古屋IC,大阪IC,名神高速,2,3000,0987654321`,
 			want: []parser.ETCRecord{
 				{
 					Date:        time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC),
 					EntryIC:     "東京IC",
 					ExitIC:      "横浜IC",
 					Route:       "東名高速",
-					VehicleType: "普通車",
+					VehicleType: 1,
 					Amount:      1500,
 					CardNumber:  "1234567890",
 				},
@@ -35,7 +35,7 @@ func TestParseCSV(t *testing.T) {
 					EntryIC:     "名古屋IC",
 					ExitIC:      "大阪IC",
 					Route:       "名神高速",
-					VehicleType: "大型車",
+					VehicleType: 2,
 					Amount:      3000,
 					CardNumber:  "0987654321",
 				},
@@ -51,14 +51,14 @@ func TestParseCSV(t *testing.T) {
 		{
 			name: "invalid amount",
 			input: `日付,入口IC,出口IC,路線,車種,金額,カード番号
-2024-01-01,東京IC,横浜IC,東名高速,普通車,invalid,1234567890`,
+2024-01-01,東京IC,横浜IC,東名高速,1,invalid,1234567890`,
 			want:    nil,
 			wantErr: true,
 		},
 		{
 			name: "invalid date format",
 			input: `日付,入口IC,出口IC,路線,車種,金額,カード番号
-invalid-date,東京IC,横浜IC,東名高速,普通車,1500,1234567890`,
+invalid-date,東京IC,横浜IC,東名高速,1,1500,1234567890`,
 			want:    nil,
 			wantErr: true,
 		},
@@ -127,7 +127,7 @@ func TestValidateRecord(t *testing.T) {
 				EntryIC:     "東京IC",
 				ExitIC:      "横浜IC",
 				Route:       "東名高速",
-				VehicleType: "普通車",
+				VehicleType: 1,
 				Amount:      1500,
 				CardNumber:  "1234567890",
 			},
@@ -140,7 +140,7 @@ func TestValidateRecord(t *testing.T) {
 				EntryIC:     "東京IC",
 				ExitIC:      "横浜IC",
 				Route:       "東名高速",
-				VehicleType: "普通車",
+				VehicleType: 1,
 				Amount:      -100,
 				CardNumber:  "1234567890",
 			},
@@ -153,7 +153,7 @@ func TestValidateRecord(t *testing.T) {
 				EntryIC:     "",
 				ExitIC:      "横浜IC",
 				Route:       "東名高速",
-				VehicleType: "普通車",
+				VehicleType: 1,
 				Amount:      1500,
 				CardNumber:  "1234567890",
 			},
@@ -166,7 +166,7 @@ func TestValidateRecord(t *testing.T) {
 				EntryIC:     "東京IC",
 				ExitIC:      "横浜IC",
 				Route:       "東名高速",
-				VehicleType: "普通車",
+				VehicleType: 1,
 				Amount:      1500,
 				CardNumber:  "",
 			},
@@ -179,7 +179,7 @@ func TestValidateRecord(t *testing.T) {
 				EntryIC:     "東京IC",
 				ExitIC:      "横浜IC",
 				Route:       "東名高速",
-				VehicleType: "普通車",
+				VehicleType: 1,
 				Amount:      1500,
 				CardNumber:  "1234567890",
 			},

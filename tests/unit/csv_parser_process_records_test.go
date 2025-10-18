@@ -28,7 +28,7 @@ func TestCSVParser_ProcessRecords_ValidateError(t *testing.T) {
 
 	// Create test data with invalid record (empty EntryIC)
 	records := [][]string{
-		{"2023-09-01", "", "横浜IC", "東名高速", "普通車", "1000", "1234567890"},
+		{"2023-09-01", "", "横浜IC", "東名高速", "1", "1000", "1234567890"},
 	}
 
 	// Test ProcessRecords directly
@@ -55,7 +55,7 @@ func TestCSVParser_ProcessRecords_RealValidation(t *testing.T) {
 
 	// Test with empty EntryIC (should trigger validation error)
 	records := [][]string{
-		{"2023-09-01", "", "横浜IC", "東名高速", "普通車", "1000", "1234567890"},
+		{"2023-09-01", "", "横浜IC", "東名高速", "1", "1000", "1234567890"},
 	}
 
 	_, err := p.ProcessRecords(records, 0)

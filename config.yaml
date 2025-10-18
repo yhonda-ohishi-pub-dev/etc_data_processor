@@ -1,11 +1,11 @@
 # ETC Data Processor Configuration
 
 # Server port
-port: 50051
+port: 50053
 
 # Database service address (gRPC endpoint)
-# Example: localhost:50052
-db_service_addr: ""
+# desktop-server provides db_service on port 50051
+db_service_addr: "localhost:50051"
 
 # Maximum batch size for processing records
 max_batch_size: 100

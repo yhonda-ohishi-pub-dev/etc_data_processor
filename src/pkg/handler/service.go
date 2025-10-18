@@ -243,7 +243,7 @@ func (s *DataProcessorService) processRecords(ctx context.Context, records []par
 		// Add account ID
 		dataToSave := map[string]interface{}{
 			"account_id":   accountID,
-			"date":        simpleRecord.Date,
+			"date":        simpleRecord.Date.Format("2006-01-02"),
 			"entry_ic":    simpleRecord.EntryIC,
 			"exit_ic":     simpleRecord.ExitIC,
 			"route":       simpleRecord.Route,

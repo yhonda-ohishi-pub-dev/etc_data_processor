@@ -311,7 +311,7 @@ func (p *ETCCSVParser) ConvertToSimpleRecord(actual ActualETCRecord) (ETCRecord,
 		EntryIC:     actual.EntryIC,
 		ExitIC:      actual.ExitIC,
 		Route:       actual.RouteInfo,
-		VehicleType: fmt.Sprintf("Class %d", actual.VehicleClass),
+		VehicleType: actual.VehicleClass,
 		Amount:      amount,
 		CardNumber:  actual.CardNumber,
 	}, nil

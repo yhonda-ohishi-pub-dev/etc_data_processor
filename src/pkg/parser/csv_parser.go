@@ -15,7 +15,7 @@ type ETCRecord struct {
 	EntryIC     string
 	ExitIC      string
 	Route       string
-	VehicleType string
+	VehicleType int
 	Amount      int
 	CardNumber  string
 }
@@ -78,12 +78,18 @@ func (p *CSVParser) ProcessRecords(records [][]string, startIndex int) ([]ETCRec
 			return nil, fmt.Errorf("invalid amount at line %d: %w", i+1, err)
 		}
 
+		// Parse vehicle type
+		vehicleType, err := strconv.Atoi(record[4])
+		if err != nil {
+			return nil, fmt.Errorf("invalid vehicle type at line %d: %w", i+1, err)
+		}
+
 		etcRecord := ETCRecord{
 			Date:        date,
 			EntryIC:     record[1],
 			ExitIC:      record[2],
 			Route:       record[3],
-			VehicleType: record[4],
+			VehicleType: vehicleType,
 			Amount:      amount,
 			CardNumber:  record[6],
 		}
@@ -122,8 +128,8 @@ func (p *CSVParser) ValidateRecord(record ETCRecord) error {
 	if record.Route == "" {
 		return fmt.Errorf("route cannot be empty")
 	}
-	if record.VehicleType == "" {
-		return fmt.Errorf("vehicle type cannot be empty")
+	if record.VehicleType == 0 {
+		return fmt.Errorf("vehicle type cannot be zero")
 	}
 	if record.CardNumber == "" {
 		return fmt.Errorf("card number cannot be empty")

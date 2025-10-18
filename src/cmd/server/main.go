@@ -11,6 +11,7 @@ import (
 
 	pb "github.com/yhonda-ohishi/etc_data_processor/src/proto"
 	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/handler"
+	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/db"
 	"github.com/yhonda-ohishi/etc_data_processor/src/internal/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -48,11 +49,21 @@ func main() {
 	// Create gRPC server
 	grpcServer := grpc.NewServer()
 
-	// Create DB client (for now, nil - will be implemented later)
+	// Create DB client
 	var dbClient handler.DBClient
 	if cfg.DBServiceAddr != "" {
-		// TODO: Initialize actual DB client
-		log.Printf("DB service configured at: %s", cfg.DBServiceAddr)
+		log.Printf("Connecting to db_service at: %s", cfg.DBServiceAddr)
+		client, err := db.NewETCMeisaiClient(cfg.DBServiceAddr)
+		if err != nil {
+			log.Printf("Warning: Failed to connect to db_service: %v", err)
+			log.Printf("Continuing without database integration...")
+		} else {
+			dbClient = client
+			log.Printf("Successfully connected to db_service")
+			defer client.Close()
+		}
+	} else {
+		log.Printf("No db_service address configured - running without database integration")
 	}
 
 	// Register service

@@ -1,0 +1,35 @@
+# Environment variables
+.env
+
+# Build output
+bin/
+*.exe
+*.exe~
+
+# Test data
+20251018_213026/
+test_request.json
+
+# Logs
+*.log
+server.log
+
+# Documentation (generated)
+date_format_fix_instructions.md
+db_service_fix_instructions.md
+
+# OS files
+nul
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Coverage
+coverage.out
+*.test
