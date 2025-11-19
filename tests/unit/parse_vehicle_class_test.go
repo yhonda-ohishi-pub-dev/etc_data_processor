@@ -3,7 +3,7 @@ package unit
 import (
 	"testing"
 
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/parser"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/parser"
 )
 
 // Test ParseVehicleClass function directly

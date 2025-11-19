@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/parser"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/parser"
 )
 
 // Test ETCCSVParser "no data records found" error path

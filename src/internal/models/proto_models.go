@@ -6,7 +6,7 @@ import "time"
 type ProtoService struct {
 	Name    string `proto:"DataProcessorService"`
 	Package string `proto:"etcdataprocessor.v1"`
-	GoPackage string `proto:"github.com/yhonda-ohishi/etc_data_processor/src/api/pb;pb"`
+	GoPackage string `proto:"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/api/pb;pb"`
 }
 
 // ProcessCSVFileRequest represents request for CSV file processing
@@ -101,7 +101,7 @@ func GetServiceDefinition() ServiceDefinition {
 		Service: ProtoService{
 			Name:      "DataProcessorService",
 			Package:   "etcdataprocessor.v1",
-			GoPackage: "github.com/yhonda-ohishi/etc_data_processor/src/api/pb;pb",
+			GoPackage: "github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/api/pb;pb",
 		},
 		Methods: []ServiceMethod{
 			{

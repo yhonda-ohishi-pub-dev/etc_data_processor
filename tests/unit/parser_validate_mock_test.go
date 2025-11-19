@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	pb "github.com/yhonda-ohishi/etc_data_processor/src/proto"
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/handler"
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/parser"
+	pb "github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/proto"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/handler"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/parser"
 )
 
 // MockParserWithValidation is a mock that focuses on ValidateRecord scenarios

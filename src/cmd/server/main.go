@@ -9,10 +9,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	pb "github.com/yhonda-ohishi/etc_data_processor/src/proto"
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/handler"
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/db"
-	"github.com/yhonda-ohishi/etc_data_processor/src/internal/config"
+	pb "github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/proto"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/handler"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/db"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/internal/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

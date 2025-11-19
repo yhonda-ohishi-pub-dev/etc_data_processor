@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	pb "github.com/yhonda-ohishi/db_service/src/proto"
+	pb "github.com/yhonda-ohishi-pub-dev/db_service/src/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -16,7 +16,7 @@ import (
 // ETCMeisaiClient wraps db_service gRPC client for ETC data operations
 type ETCMeisaiClient struct {
 	conn   *grpc.ClientConn
-	client pb.ETCMeisaiServiceClient
+	client pb.Db_ETCMeisaiServiceClient
 }
 
 // NewETCMeisaiClient creates a new gRPC client connecting to db_service
@@ -34,7 +34,7 @@ func NewETCMeisaiClient(address string) (*ETCMeisaiClient, error) {
 
 	return &ETCMeisaiClient{
 		conn:   conn,
-		client: pb.NewETCMeisaiServiceClient(conn),
+		client: pb.NewDb_ETCMeisaiServiceClient(conn),
 	}, nil
 }
 
@@ -53,7 +53,7 @@ func (c *ETCMeisaiClient) SaveETCData(data interface{}) error {
 	}
 
 	// Create request using generated proto
-	req := &pb.CreateETCMeisaiRequest{
+	req := &pb.Db_CreateETCMeisaiRequest{
 		EtcMeisai: etcMeisai,
 	}
 
@@ -78,7 +78,7 @@ func (c *ETCMeisaiClient) Close() error {
 }
 
 // convertToETCMeisai converts map data to ETCMeisai proto message
-func convertToETCMeisai(data map[string]interface{}) (*pb.ETCMeisai, error) {
+func convertToETCMeisai(data map[string]interface{}) (*pb.Db_ETCMeisai, error) {
 	// Parse date field
 	dateStr, ok := data["date"].(string)
 	if !ok || dateStr == "" {
@@ -125,7 +125,7 @@ func convertToETCMeisai(data map[string]interface{}) (*pb.ETCMeisai, error) {
 	}
 
 	// Build ETCMeisai proto message
-	etcMeisai := &pb.ETCMeisai{
+	etcMeisai := &pb.Db_ETCMeisai{
 		DateTo:     dateToRFC3339, // RFC3339 format for db_service
 		DateToDate: dateStr,       // Keep original date format for date_to_date
 		IcFr:       icFr,          // optional: *string型
@@ -164,7 +164,7 @@ func parseInt32(value interface{}) (int32, error) {
 }
 
 // generateHash generates SHA256 hash for duplicate detection
-func generateHash(etcMeisai *pb.ETCMeisai) string {
+func generateHash(etcMeisai *pb.Db_ETCMeisai) string {
 	icFr := ""
 	if etcMeisai.IcFr != nil {
 		icFr = *etcMeisai.IcFr

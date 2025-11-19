@@ -1,10 +1,10 @@
-module github.com/yhonda-ohishi/etc_data_processor
+module github.com/yhonda-ohishi-pub-dev/etc_data_processor
 
 go 1.25.1
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.2
-	github.com/yhonda-ohishi/db_service v0.0.0-20251018073811-e72f955d8ce8
+	github.com/yhonda-ohishi-pub-dev/db_service v0.0.0-20251018073811-e72f955d8ce8
 	golang.org/x/text v0.29.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250922171735-9219d122eba9
 	google.golang.org/grpc v1.75.1
@@ -20,4 +20,4 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250908214217-97024824d090 // indirect
 )
 
-replace github.com/yhonda-ohishi/db_service => ../db_service
+replace github.com/yhonda-ohishi-pub-dev/db_service => ../db_service

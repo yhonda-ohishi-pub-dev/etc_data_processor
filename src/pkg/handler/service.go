@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	pb "github.com/yhonda-ohishi/etc_data_processor/src/proto"
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/parser"
+	pb "github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/proto"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/parser"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package etcdataprocessor.v1;
 
-option go_package = "github.com/yhonda-ohishi/etc_data_processor/src/api/pb;pb";
+option go_package = "github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/api/pb;pb";
 
 import "google/api/annotations.proto";
 

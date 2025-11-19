@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/yhonda-ohishi/etc_data_processor/src/internal/models"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/internal/models"
 )
 
 const protoTemplate = `syntax = "proto3";

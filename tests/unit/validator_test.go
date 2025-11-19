@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/handler"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/handler"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

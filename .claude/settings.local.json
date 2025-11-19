@@ -5,7 +5,10 @@
       "Bash(buf generate:*)",
       "Bash(go test:*)",
       "Bash(go tool cover:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Read(//c/go/**)",
+      "Bash(dir /s \"C:\\go\\db_service\")",
+      "Bash(findstr \"\\.proto\\|\\.pb\\.go\")"
     ],
     "deny": [],
     "ask": []

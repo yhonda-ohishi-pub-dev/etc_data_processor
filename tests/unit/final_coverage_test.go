@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/parser"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/parser"
 )
 
 // Test ParseFile error cases for 100% coverage

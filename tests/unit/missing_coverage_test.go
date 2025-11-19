@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	pb "github.com/yhonda-ohishi/etc_data_processor/src/proto"
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/handler"
-	"github.com/yhonda-ohishi/etc_data_processor/src/pkg/parser"
+	pb "github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/proto"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/handler"
+	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/parser"
 )
 
 // Test HealthCheck method (to cover service.go:173-183)
