@@ -110,7 +110,14 @@ func loadConfig(configFile string) (*config.Config, error) {
 	}
 
 	// Environment variables override file config
-	if port := os.Getenv("ETC_PROCESSOR_PORT"); port != "" {
+	// Check GRPC_PORT first, then ETC_PROCESSOR_PORT
+	if port := os.Getenv("GRPC_PORT"); port != "" {
+		var p int
+		fmt.Sscanf(port, "%d", &p)
+		if p > 0 {
+			cfg.Port = p
+		}
+	} else if port := os.Getenv("ETC_PROCESSOR_PORT"); port != "" {
 		var p int
 		fmt.Sscanf(port, "%d", &p)
 		if p > 0 {
