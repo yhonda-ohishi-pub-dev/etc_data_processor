@@ -353,6 +353,8 @@ func (s *DataProcessorService) processRecords(ctx context.Context, records []par
 		// Skip duplicates if requested
 		if skipDuplicates && processedKeys[key] {
 			stats.SkippedRecords++
+			errors = append(errors, fmt.Sprintf("Record %d: skipped (duplicate): %s %s -> %s %s, amount: %d",
+				i+1, record.EntryDate, record.EntryTime, record.ExitDate, record.ExitTime, record.ETCAmount))
 			continue
 		}
 
