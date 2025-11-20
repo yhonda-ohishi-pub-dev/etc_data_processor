@@ -29,8 +29,8 @@ func TestHealthCheck(t *testing.T) {
 		t.Errorf("Expected healthy status, got %s", resp.Status)
 	}
 
-	if resp.Version != "1.0.0" {
-		t.Errorf("Expected version 1.0.0, got %s", resp.Version)
+	if resp.Version != "1.2.0" {
+		t.Errorf("Expected version 1.2.0, got %s", resp.Version)
 	}
 }
 
