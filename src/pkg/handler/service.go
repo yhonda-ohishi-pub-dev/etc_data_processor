@@ -141,6 +141,7 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 
 	var allRecords []parser.ActualETCRecord
 	var parseErrors []string
+	var fileCount int
 
 	// Check if resolved path is a directory (only if it exists)
 	fileInfo, err := os.Stat(resolvedPath)
@@ -169,6 +170,8 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 			}, nil
 		}
 
+		fileCount = len(csvFiles)
+
 		// Parse each CSV file
 		for _, csvFile := range csvFiles {
 			records, err := s.parser.ParseFile(csvFile)
@@ -180,6 +183,7 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 		}
 	} else {
 		// Single file processing (or error will be caught by parser)
+		fileCount = 1
 		records, err := s.parser.ParseFile(resolvedPath)
 		if err != nil {
 			return &pb.ProcessCSVFileResponse{
@@ -205,7 +209,7 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 
 	return &pb.ProcessCSVFileResponse{
 		Success: stats.SavedRecords > 0,
-		Message: fmt.Sprintf("Processed %d records from %d file(s)", stats.TotalRecords, len(allRecords)),
+		Message: fmt.Sprintf("Processed %d records from %d file(s)", stats.TotalRecords, fileCount),
 		Stats:   stats,
 		Errors:  allErrors,
 	}, nil
