@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	version = "1.2.0"
+	version = "1.3.0"
 )
 
 // getSkipDuplicatesDefault returns the default value for skip_duplicates
@@ -67,18 +67,8 @@ func resolveCSVFilePath(providedPath string) (string, error) {
 	latestDir := dirs[0].Name()
 	latestDirPath := filepath.Join(basePath, latestDir)
 
-	// Find CSV files in the latest directory
-	csvFiles, err := filepath.Glob(filepath.Join(latestDirPath, "*.csv"))
-	if err != nil {
-		return "", fmt.Errorf("failed to search for CSV files: %w", err)
-	}
-
-	if len(csvFiles) == 0 {
-		return "", fmt.Errorf("no CSV files found in latest directory: %s", latestDirPath)
-	}
-
-	// Return the first CSV file found
-	return csvFiles[0], nil
+	// Return the latest directory path (will process all CSV files in it)
+	return latestDirPath, nil
 }
 
 // DBClient interface for database operations
@@ -149,30 +139,75 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 		}, nil
 	}
 
-	// Parse CSV file
-	records, err := s.parser.ParseFile(resolvedPath)
-	if err != nil {
-		return &pb.ProcessCSVFileResponse{
-			Success: false,
-			Message: fmt.Sprintf("Failed to parse CSV file: %v", err),
-			Stats: &pb.ProcessingStats{
-				TotalRecords: 0,
-			},
-			Errors: []string{err.Error()},
-		}, nil
+	var allRecords []parser.ActualETCRecord
+	var parseErrors []string
+
+	// Check if resolved path is a directory (only if it exists)
+	fileInfo, err := os.Stat(resolvedPath)
+	if err == nil && fileInfo.IsDir() {
+		// Process all CSV files in directory
+		csvFiles, err := filepath.Glob(filepath.Join(resolvedPath, "*.csv"))
+		if err != nil {
+			return &pb.ProcessCSVFileResponse{
+				Success: false,
+				Message: fmt.Sprintf("Failed to search for CSV files: %v", err),
+				Stats: &pb.ProcessingStats{
+					TotalRecords: 0,
+				},
+				Errors: []string{err.Error()},
+			}, nil
+		}
+
+		if len(csvFiles) == 0 {
+			return &pb.ProcessCSVFileResponse{
+				Success: false,
+				Message: "No CSV files found in directory",
+				Stats: &pb.ProcessingStats{
+					TotalRecords: 0,
+				},
+				Errors: []string{"no CSV files found in " + resolvedPath},
+			}, nil
+		}
+
+		// Parse each CSV file
+		for _, csvFile := range csvFiles {
+			records, err := s.parser.ParseFile(csvFile)
+			if err != nil {
+				parseErrors = append(parseErrors, fmt.Sprintf("Failed to parse %s: %v", filepath.Base(csvFile), err))
+				continue
+			}
+			allRecords = append(allRecords, records...)
+		}
+	} else {
+		// Single file processing (or error will be caught by parser)
+		records, err := s.parser.ParseFile(resolvedPath)
+		if err != nil {
+			return &pb.ProcessCSVFileResponse{
+				Success: false,
+				Message: fmt.Sprintf("Failed to parse CSV file: %v", err),
+				Stats: &pb.ProcessingStats{
+					TotalRecords: 0,
+				},
+				Errors: []string{err.Error()},
+			}, nil
+		}
+		allRecords = records
 	}
 
 	// Get skip_duplicates setting from environment or default
 	skipDuplicates := getSkipDuplicatesDefault()
 
 	// Process records
-	stats, errors := s.processRecords(ctx, records, req.GetAccountId(), skipDuplicates)
+	stats, errors := s.processRecords(ctx, allRecords, req.GetAccountId(), skipDuplicates)
+
+	// Combine parse errors with processing errors
+	allErrors := append(parseErrors, errors...)
 
 	return &pb.ProcessCSVFileResponse{
 		Success: stats.SavedRecords > 0,
-		Message: fmt.Sprintf("Processed %d records from file", stats.TotalRecords),
+		Message: fmt.Sprintf("Processed %d records from %d file(s)", stats.TotalRecords, len(allRecords)),
 		Stats:   stats,
-		Errors:  errors,
+		Errors:  allErrors,
 	}, nil
 }
 
