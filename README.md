@@ -123,12 +123,14 @@ export CSV_BASE_PATH=/data/csv_files
 
 | パラメータ | 型 | 必須 | デフォルト | 説明 |
 |-----------|-----|------|-----------|------|
-| `csv_file_path` | string | ✅ | - | CSVファイルのパス（ProcessCSVFileのみ） |
+| `csv_file_path` | string | ❌ | - | CSVファイルのパス（ProcessCSVFileのみ）。`CSV_BASE_PATH`未設定時は必須 |
 | `csv_data` | string | ✅ | - | CSV文字列データ（ProcessCSVDataのみ） |
 | `account_id` | string | ❌ | - | アカウントID（3文字以上、将来のマルチテナント対応用） |
 | `skip_duplicates` | bool | ❌ | `true` | 重複チェック（環境変数`SKIP_DUPLICATES`で制御可能） |
 
-**注**: `account_id`はオプショナルです。空文字列を指定するか省略できます。
+**注**:
+- `csv_file_path`は`CSV_BASE_PATH`環境変数が設定されている場合はオプショナルです。未設定時は必須になります。
+- `account_id`はオプショナルです。空文字列を指定するか省略できます。
 
 ## 使用技術
 

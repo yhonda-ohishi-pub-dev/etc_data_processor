@@ -24,9 +24,9 @@ const (
 
 type ProcessCSVFileRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	CsvFilePath    string                 `protobuf:"bytes,1,opt,name=csv_file_path,json=csvFilePath,proto3" json:"csv_file_path,omitempty"`
-	AccountId      string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	SkipDuplicates bool                   `protobuf:"varint,3,opt,name=skip_duplicates,json=skipDuplicates,proto3" json:"skip_duplicates,omitempty"`
+	CsvFilePath    *string                `protobuf:"bytes,1,opt,name=csv_file_path,json=csvFilePath,proto3,oneof" json:"csv_file_path,omitempty"`
+	AccountId      *string                `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3,oneof" json:"account_id,omitempty"`
+	SkipDuplicates *bool                  `protobuf:"varint,3,opt,name=skip_duplicates,json=skipDuplicates,proto3,oneof" json:"skip_duplicates,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -62,22 +62,22 @@ func (*ProcessCSVFileRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *ProcessCSVFileRequest) GetCsvFilePath() string {
-	if x != nil {
-		return x.CsvFilePath
+	if x != nil && x.CsvFilePath != nil {
+		return *x.CsvFilePath
 	}
 	return ""
 }
 
 func (x *ProcessCSVFileRequest) GetAccountId() string {
-	if x != nil {
-		return x.AccountId
+	if x != nil && x.AccountId != nil {
+		return *x.AccountId
 	}
 	return ""
 }
 
 func (x *ProcessCSVFileRequest) GetSkipDuplicates() bool {
-	if x != nil {
-		return x.SkipDuplicates
+	if x != nil && x.SkipDuplicates != nil {
+		return *x.SkipDuplicates
 	}
 	return false
 }
@@ -153,8 +153,8 @@ func (x *ProcessCSVFileResponse) GetErrors() []string {
 type ProcessCSVDataRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	CsvData        string                 `protobuf:"bytes,1,opt,name=csv_data,json=csvData,proto3" json:"csv_data,omitempty"`
-	AccountId      string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	SkipDuplicates bool                   `protobuf:"varint,3,opt,name=skip_duplicates,json=skipDuplicates,proto3" json:"skip_duplicates,omitempty"`
+	AccountId      *string                `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3,oneof" json:"account_id,omitempty"`
+	SkipDuplicates *bool                  `protobuf:"varint,3,opt,name=skip_duplicates,json=skipDuplicates,proto3,oneof" json:"skip_duplicates,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -197,15 +197,15 @@ func (x *ProcessCSVDataRequest) GetCsvData() string {
 }
 
 func (x *ProcessCSVDataRequest) GetAccountId() string {
-	if x != nil {
-		return x.AccountId
+	if x != nil && x.AccountId != nil {
+		return *x.AccountId
 	}
 	return ""
 }
 
 func (x *ProcessCSVDataRequest) GetSkipDuplicates() bool {
-	if x != nil {
-		return x.SkipDuplicates
+	if x != nil && x.SkipDuplicates != nil {
+		return *x.SkipDuplicates
 	}
 	return false
 }
@@ -281,7 +281,7 @@ func (x *ProcessCSVDataResponse) GetErrors() []string {
 type ValidateCSVDataRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	CsvData       string                 `protobuf:"bytes,1,opt,name=csv_data,json=csvData,proto3" json:"csv_data,omitempty"`
-	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	AccountId     *string                `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3,oneof" json:"account_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -324,8 +324,8 @@ func (x *ValidateCSVDataRequest) GetCsvData() string {
 }
 
 func (x *ValidateCSVDataRequest) GetAccountId() string {
-	if x != nil {
-		return x.AccountId
+	if x != nil && x.AccountId != nil {
+		return *x.AccountId
 	}
 	return ""
 }
@@ -642,31 +642,37 @@ var File_src_proto_data_processor_proto protoreflect.FileDescriptor
 
 const file_src_proto_data_processor_proto_rawDesc = "" +
 	"\n" +
-	"\x1esrc/proto/data_processor.proto\x12\x13etcdataprocessor.v1\x1a\x1cgoogle/api/annotations.proto\"\x83\x01\n" +
-	"\x15ProcessCSVFileRequest\x12\"\n" +
-	"\rcsv_file_path\x18\x01 \x01(\tR\vcsvFilePath\x12\x1d\n" +
+	"\x1esrc/proto/data_processor.proto\x12\x13etcdataprocessor.v1\x1a\x1cgoogle/api/annotations.proto\"\xc7\x01\n" +
+	"\x15ProcessCSVFileRequest\x12'\n" +
+	"\rcsv_file_path\x18\x01 \x01(\tH\x00R\vcsvFilePath\x88\x01\x01\x12\"\n" +
 	"\n" +
-	"account_id\x18\x02 \x01(\tR\taccountId\x12'\n" +
-	"\x0fskip_duplicates\x18\x03 \x01(\bR\x0eskipDuplicates\"\xa0\x01\n" +
+	"account_id\x18\x02 \x01(\tH\x01R\taccountId\x88\x01\x01\x12,\n" +
+	"\x0fskip_duplicates\x18\x03 \x01(\bH\x02R\x0eskipDuplicates\x88\x01\x01B\x10\n" +
+	"\x0e_csv_file_pathB\r\n" +
+	"\v_account_idB\x12\n" +
+	"\x10_skip_duplicates\"\xa0\x01\n" +
 	"\x16ProcessCSVFileResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12:\n" +
 	"\x05stats\x18\x03 \x01(\v2$.etcdataprocessor.v1.ProcessingStatsR\x05stats\x12\x16\n" +
-	"\x06errors\x18\x04 \x03(\tR\x06errors\"z\n" +
+	"\x06errors\x18\x04 \x03(\tR\x06errors\"\xa7\x01\n" +
 	"\x15ProcessCSVDataRequest\x12\x19\n" +
-	"\bcsv_data\x18\x01 \x01(\tR\acsvData\x12\x1d\n" +
+	"\bcsv_data\x18\x01 \x01(\tR\acsvData\x12\"\n" +
 	"\n" +
-	"account_id\x18\x02 \x01(\tR\taccountId\x12'\n" +
-	"\x0fskip_duplicates\x18\x03 \x01(\bR\x0eskipDuplicates\"\xa0\x01\n" +
+	"account_id\x18\x02 \x01(\tH\x00R\taccountId\x88\x01\x01\x12,\n" +
+	"\x0fskip_duplicates\x18\x03 \x01(\bH\x01R\x0eskipDuplicates\x88\x01\x01B\r\n" +
+	"\v_account_idB\x12\n" +
+	"\x10_skip_duplicates\"\xa0\x01\n" +
 	"\x16ProcessCSVDataResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12:\n" +
 	"\x05stats\x18\x03 \x01(\v2$.etcdataprocessor.v1.ProcessingStatsR\x05stats\x12\x16\n" +
-	"\x06errors\x18\x04 \x03(\tR\x06errors\"R\n" +
+	"\x06errors\x18\x04 \x03(\tR\x06errors\"f\n" +
 	"\x16ValidateCSVDataRequest\x12\x19\n" +
-	"\bcsv_data\x18\x01 \x01(\tR\acsvData\x12\x1d\n" +
+	"\bcsv_data\x18\x01 \x01(\tR\acsvData\x12\"\n" +
 	"\n" +
-	"account_id\x18\x02 \x01(\tR\taccountId\"\xc0\x01\n" +
+	"account_id\x18\x02 \x01(\tH\x00R\taccountId\x88\x01\x01B\r\n" +
+	"\v_account_id\"\xc0\x01\n" +
 	"\x17ValidateCSVDataResponse\x12\x19\n" +
 	"\bis_valid\x18\x01 \x01(\bR\aisValid\x12<\n" +
 	"\x06errors\x18\x02 \x03(\v2$.etcdataprocessor.v1.ValidationErrorR\x06errors\x12'\n" +
@@ -751,6 +757,9 @@ func file_src_proto_data_processor_proto_init() {
 	if File_src_proto_data_processor_proto != nil {
 		return
 	}
+	file_src_proto_data_processor_proto_msgTypes[0].OneofWrappers = []any{}
+	file_src_proto_data_processor_proto_msgTypes[2].OneofWrappers = []any{}
+	file_src_proto_data_processor_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

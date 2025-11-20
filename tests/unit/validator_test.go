@@ -343,11 +343,16 @@ func TestValidateProcessCSVDataRequest(t *testing.T) {
 
 // mockValidateReq implements the ValidateRequest interface for testing
 type mockValidateReq struct {
-	csvData string
+	csvData   string
+	accountId string
 }
 
 func (m *mockValidateReq) GetCsvData() string {
 	return m.csvData
+}
+
+func (m *mockValidateReq) GetAccountId() string {
+	return m.accountId
 }
 
 // Test ValidateValidateCSVDataRequest

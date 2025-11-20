@@ -137,7 +137,7 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 	}
 
 	// Resolve CSV file path (may use CSV_BASE_PATH to find latest folder)
-	resolvedPath, err := resolveCSVFilePath(req.CsvFilePath)
+	resolvedPath, err := resolveCSVFilePath(req.GetCsvFilePath())
 	if err != nil {
 		return &pb.ProcessCSVFileResponse{
 			Success: false,
@@ -166,7 +166,7 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 	skipDuplicates := getSkipDuplicatesDefault()
 
 	// Process records
-	stats, errors := s.processRecords(ctx, records, req.AccountId, skipDuplicates)
+	stats, errors := s.processRecords(ctx, records, req.GetAccountId(), skipDuplicates)
 
 	return &pb.ProcessCSVFileResponse{
 		Success: stats.SavedRecords > 0,
@@ -195,7 +195,7 @@ func (s *DataProcessorService) ProcessCSVData(ctx context.Context, req *pb.Proce
 	skipDuplicates := getSkipDuplicatesDefault()
 
 	// Process records
-	stats, errors := s.processRecords(ctx, records, req.AccountId, skipDuplicates)
+	stats, errors := s.processRecords(ctx, records, req.GetAccountId(), skipDuplicates)
 
 	return &pb.ProcessCSVDataResponse{
 		Success: stats.SavedRecords > 0,

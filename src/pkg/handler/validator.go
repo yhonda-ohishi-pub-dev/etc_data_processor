@@ -26,8 +26,9 @@ func NewDefaultValidator() *DefaultValidator {
 
 // ValidateCSVFilePath validates CSV file path
 func (v *DefaultValidator) ValidateCSVFilePath(path string) error {
-	if path == "" {
-		return status.Error(codes.InvalidArgument, "csv_file_path is required")
+	// csv_file_path is optional when CSV_BASE_PATH is set
+	if path == "" && os.Getenv("CSV_BASE_PATH") == "" {
+		return status.Error(codes.InvalidArgument, "csv_file_path is required when CSV_BASE_PATH is not set")
 	}
 	return nil
 }
@@ -83,16 +84,22 @@ func ValidateProcessCSVFileRequest(req interface{}, v Validator) error {
 		return status.Error(codes.InvalidArgument, "invalid request type")
 	}
 
-	if err := v.ValidateCSVFilePath(fileReq.GetCsvFilePath()); err != nil {
+	csvFilePath := fileReq.GetCsvFilePath()
+	accountID := fileReq.GetAccountId()
+
+	if err := v.ValidateCSVFilePath(csvFilePath); err != nil {
 		return err
 	}
 
-	if err := v.ValidateAccountID(fileReq.GetAccountId()); err != nil {
+	if err := v.ValidateAccountID(accountID); err != nil {
 		return err
 	}
 
-	if err := v.CheckFileExists(fileReq.GetCsvFilePath()); err != nil {
-		return err
+	// Only check file existence if path is provided and CSV_BASE_PATH is not set
+	if csvFilePath != "" && os.Getenv("CSV_BASE_PATH") == "" {
+		if err := v.CheckFileExists(csvFilePath); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -133,6 +140,7 @@ func ValidateValidateCSVDataRequest(req interface{}, v Validator) error {
 
 	type ValidateRequest interface {
 		GetCsvData() string
+		GetAccountId() string
 	}
 
 	validateReq, ok := req.(ValidateRequest)
@@ -141,6 +149,10 @@ func ValidateValidateCSVDataRequest(req interface{}, v Validator) error {
 	}
 
 	if err := v.ValidateCSVData(validateReq.GetCsvData()); err != nil {
+		return err
+	}
+
+	if err := v.ValidateAccountID(validateReq.GetAccountId()); err != nil {
 		return err
 	}
 

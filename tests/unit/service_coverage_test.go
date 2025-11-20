@@ -57,9 +57,9 @@ func TestProcessCSVFile_Coverage(t *testing.T) {
 		{
 			name: "successful file processing",
 			req: &pb.ProcessCSVFileRequest{
-				CsvFilePath:    validCSVPath,
-				AccountId:      "test-account",
-				SkipDuplicates: false,
+				CsvFilePath: strPtr(validCSVPath),
+				AccountId: strPtr("test-account"),
+				SkipDuplicates: boolPtr(false),
 			},
 			dbClient: &mockDBClient{},
 			wantErr:  false,
@@ -67,9 +67,9 @@ func TestProcessCSVFile_Coverage(t *testing.T) {
 		{
 			name: "file parse error",
 			req: &pb.ProcessCSVFileRequest{
-				CsvFilePath:    invalidCSVPath,
-				AccountId:      "test-account",
-				SkipDuplicates: false,
+				CsvFilePath: strPtr(invalidCSVPath),
+				AccountId: strPtr("test-account"),
+				SkipDuplicates: boolPtr(false),
 			},
 			dbClient: &mockDBClient{},
 			wantErr:  false, // Returns response with error details
@@ -77,9 +77,9 @@ func TestProcessCSVFile_Coverage(t *testing.T) {
 		{
 			name: "db save error",
 			req: &pb.ProcessCSVFileRequest{
-				CsvFilePath:    validCSVPath,
-				AccountId:      "test-account",
-				SkipDuplicates: false,
+				CsvFilePath: strPtr(validCSVPath),
+				AccountId: strPtr("test-account"),
+				SkipDuplicates: boolPtr(false),
 			},
 			dbClient: &mockDBClient{
 				saveFunc: func(data interface{}) error {
@@ -124,8 +124,8 @@ func TestProcessRecords_ContextCancellation(t *testing.T) {
 		CsvData: `利用年月日（自）,時分（自）,利用年月日（至）,時分（至）,利用ＩＣ（自）,利用ＩＣ（至）,割引前料金,ＥＴＣ割引額,通行料金,車種,車両番号,ＥＴＣカード番号,備考
 25/09/01,08:00,25/09/01,09:00,東京,横浜,1500,-300,1200,2,1234,********12345678,テスト
 25/09/02,08:00,25/09/02,09:00,横浜,名古屋,3000,-500,2500,2,1234,********12345678,テスト`,
-		AccountId:      "test-account",
-		SkipDuplicates: false,
+		AccountId: strPtr("test-account"),
+		SkipDuplicates: boolPtr(false),
 	}
 
 	resp, err := service.ProcessCSVData(ctx, req)
@@ -164,7 +164,7 @@ func TestValidateCSVData_Duplicates(t *testing.T) {
 25/09/01,08:00,25/09/01,09:00,東京,横浜,1500,-300,1200,2,1234,********12345678,テスト
 25/09/01,08:00,25/09/01,09:00,東京,横浜,1500,-300,1200,2,1234,********12345678,テスト
 25/09/01,08:00,25/09/01,09:00,東京,横浜,1500,-300,1200,2,1234,********12345678,テスト`,
-		AccountId: "test-account",
+		AccountId: strPtr("test-account"),
 	}
 
 	resp, err := service.ValidateCSVData(context.Background(), req)
@@ -192,7 +192,7 @@ func TestValidateCSVData_ValidationErrors(t *testing.T) {
 		CsvData: `利用年月日（自）,時分（自）,利用年月日（至）,時分（至）,利用ＩＣ（自）,利用ＩＣ（至）,割引前料金,ＥＴＣ割引額,通行料金,車種,車両番号,ＥＴＣカード番号,備考
 25/09/01,08:00,25/09/01,09:00,東京,横浜,1500,-300,1200,2,1234,,テスト
 invalid,08:00,25/09/01,09:00,東京,横浜,1500,-300,1200,2,1234,********12345678,テスト`,
-		AccountId: "test-account",
+		AccountId: strPtr("test-account"),
 	}
 
 	resp, err := service.ValidateCSVData(context.Background(), req)
@@ -231,8 +231,8 @@ func TestProcessRecords_SaveError(t *testing.T) {
 		CsvData: `利用年月日（自）,時分（自）,利用年月日（至）,時分（至）,利用ＩＣ（自）,利用ＩＣ（至）,割引前料金,ＥＴＣ割引額,通行料金,車種,車両番号,ＥＴＣカード番号,備考
 25/09/01,08:00,25/09/01,09:00,東京,横浜,1500,-300,1200,2,1234,********12345678,テスト1
 25/09/02,08:00,25/09/02,09:00,横浜,名古屋,3000,-500,2500,2,1234,********87654321,テスト2`,
-		AccountId:      "test-account",
-		SkipDuplicates: false,
+		AccountId: strPtr("test-account"),
+		SkipDuplicates: boolPtr(false),
 	}
 
 	resp, err := service.ProcessCSVData(context.Background(), req)
@@ -265,8 +265,8 @@ func TestProcessRecords_ConversionError(t *testing.T) {
 	req := &pb.ProcessCSVDataRequest{
 		CsvData: `利用年月日（自）,時分（自）,利用年月日（至）,時分（至）,利用ＩＣ（自）,利用ＩＣ（至）,割引前料金,ＥＴＣ割引額,通行料金,車種,車両番号,ＥＴＣカード番号,備考
 invalid1,08:00,invalid2,09:00,東京,横浜,1500,-300,1200,2,1234,********12345678,テスト`,
-		AccountId:      "test-account",
-		SkipDuplicates: false,
+		AccountId: strPtr("test-account"),
+		SkipDuplicates: boolPtr(false),
 	}
 
 	resp, err := service.ProcessCSVData(context.Background(), req)
@@ -298,8 +298,8 @@ func TestProcessCSVData_SkipMultipleDuplicates(t *testing.T) {
 
 	req := &pb.ProcessCSVDataRequest{
 		CsvData:        csvData,
-		AccountId:      "test-account",
-		SkipDuplicates: true,
+		AccountId: strPtr("test-account"),
+		SkipDuplicates: boolPtr(true),
 	}
 
 	resp, err := service.ProcessCSVData(context.Background(), req)

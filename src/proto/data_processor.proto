@@ -36,9 +36,9 @@ service DataProcessorService {
 }
 
 message ProcessCSVFileRequest {
-    string csv_file_path = 1;
-    string account_id = 2;
-    bool skip_duplicates = 3;
+    optional string csv_file_path = 1;
+    optional string account_id = 2;
+    optional bool skip_duplicates = 3;
 }
 
 message ProcessCSVFileResponse {
@@ -50,8 +50,8 @@ message ProcessCSVFileResponse {
 
 message ProcessCSVDataRequest {
     string csv_data = 1;
-    string account_id = 2;
-    bool skip_duplicates = 3;
+    optional string account_id = 2;
+    optional bool skip_duplicates = 3;
 }
 
 message ProcessCSVDataResponse {
@@ -63,7 +63,7 @@ message ProcessCSVDataResponse {
 
 message ValidateCSVDataRequest {
     string csv_data = 1;
-    string account_id = 2;
+    optional string account_id = 2;
 }
 
 message ValidateCSVDataResponse {

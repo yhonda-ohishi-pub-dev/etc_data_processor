@@ -22,8 +22,8 @@ func TestProcessCSVFile_ValidatorErrors(t *testing.T) {
 		{
 			name: "validator path error",
 			req: &pb.ProcessCSVFileRequest{
-				CsvFilePath: "test.csv",
-				AccountId:   "test-account",
+				CsvFilePath: strPtr("test.csv"),
+				AccountId: strPtr("test-account"),
 			},
 			validator: &MockValidator{
 				ValidateCSVFilePathFunc: func(path string) error {
@@ -35,8 +35,8 @@ func TestProcessCSVFile_ValidatorErrors(t *testing.T) {
 		{
 			name: "validator account error",
 			req: &pb.ProcessCSVFileRequest{
-				CsvFilePath: "test.csv",
-				AccountId:   "test-account",
+				CsvFilePath: strPtr("test.csv"),
+				AccountId: strPtr("test-account"),
 			},
 			validator: &MockValidator{
 				ValidateAccountIDFunc: func(id string) error {
@@ -48,8 +48,8 @@ func TestProcessCSVFile_ValidatorErrors(t *testing.T) {
 		{
 			name: "validator file exists error",
 			req: &pb.ProcessCSVFileRequest{
-				CsvFilePath: "test.csv",
-				AccountId:   "test-account",
+				CsvFilePath: strPtr("test.csv"),
+				AccountId: strPtr("test-account"),
 			},
 			validator: &MockValidator{
 				CheckFileExistsFunc: func(path string) error {
@@ -87,7 +87,7 @@ func TestProcessCSVData_ValidatorErrors(t *testing.T) {
 			name: "validator CSV data error",
 			req: &pb.ProcessCSVDataRequest{
 				CsvData:   "test",
-				AccountId: "test-account",
+				AccountId: strPtr("test-account"),
 			},
 			validator: &MockValidator{
 				ValidateCSVDataFunc: func(data string) error {
@@ -100,7 +100,7 @@ func TestProcessCSVData_ValidatorErrors(t *testing.T) {
 			name: "validator account error",
 			req: &pb.ProcessCSVDataRequest{
 				CsvData:   "valid data",
-				AccountId: "test-account",
+				AccountId: strPtr("test-account"),
 			},
 			validator: &MockValidator{
 				ValidateAccountIDFunc: func(id string) error {
@@ -172,7 +172,7 @@ func TestService_NilDBClient(t *testing.T) {
 
 	req := &pb.ProcessCSVDataRequest{
 		CsvData:   validCSV,
-		AccountId: "test-account",
+		AccountId: strPtr("test-account"),
 	}
 
 	resp, err := service.ProcessCSVData(context.Background(), req)

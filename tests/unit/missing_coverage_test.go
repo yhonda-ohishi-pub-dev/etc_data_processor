@@ -14,6 +14,15 @@ import (
 	"github.com/yhonda-ohishi-pub-dev/etc_data_processor/src/pkg/parser"
 )
 
+// Helper functions for pointer conversion
+func strPtr(s string) *string {
+	return &s
+}
+
+func boolPtr(b bool) *bool {
+	return &b
+}
+
 // Test HealthCheck method (to cover service.go:173-183)
 func TestHealthCheck(t *testing.T) {
 	service := handler.NewDataProcessorService(nil)
@@ -43,9 +52,9 @@ func TestProcessCSVFile_ParseError(t *testing.T) {
 
 	service := handler.NewDataProcessorService(nil)
 	req := &pb.ProcessCSVFileRequest{
-		CsvFilePath:    errorFile,
-		AccountId:      "test-account",
-		SkipDuplicates: false,
+		CsvFilePath: strPtr(errorFile),
+		AccountId: strPtr("test-account"),
+		SkipDuplicates: boolPtr(false),
 	}
 
 	resp, err := service.ProcessCSVFile(context.Background(), req)
@@ -71,7 +80,7 @@ func TestProcessCSVData_ParseError(t *testing.T) {
 	// CSV that will fail parsing - empty string should trigger validator error first
 	req := &pb.ProcessCSVDataRequest{
 		CsvData:   "",
-		AccountId: "test-account",
+		AccountId: strPtr("test-account"),
 	}
 
 	_, err := service.ProcessCSVData(context.Background(), req)

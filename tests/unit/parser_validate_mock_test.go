@@ -257,7 +257,7 @@ func TestCSVParser_DirectValidateRecordError(t *testing.T) {
 	req := &pb.ProcessCSVDataRequest{
 		CsvData: `利用年月日（自）,時分（自）,利用年月日（至）,時分（至）,利用ＩＣ（自）,利用ＩＣ（至）,通行料金,車種,ＥＴＣカード番号
 25/09/01,08:00,25/09/01,09:00,東京,横浜,1200,2,********12345678`,
-		AccountId: "test-account",
+		AccountId: strPtr("test-account"),
 	}
 
 	_, err := service.ProcessCSVData(context.Background(), req)
@@ -392,7 +392,7 @@ func TestCSVParser_ValidateRecord_MockError(t *testing.T) {
 	req := &pb.ProcessCSVDataRequest{
 		CsvData: `利用年月日（自）,時分（自）,利用年月日（至）,時分（至）,利用ＩＣ（自）,利用ＩＣ（至）,通行料金,車種,ＥＴＣカード番号
 25/09/01,08:00,25/09/01,09:00,東京,横浜,1200,2,********12345678`,
-		AccountId: "test-account",
+		AccountId: strPtr("test-account"),
 	}
 
 	_, err := service.ProcessCSVData(context.Background(), req)
@@ -430,9 +430,9 @@ func TestProcessCSVFile_ValidateRecordError(t *testing.T) {
 	)
 
 	req := &pb.ProcessCSVFileRequest{
-		CsvFilePath:    "/valid/path/test.csv",
-		AccountId:      "test-account",
-		SkipDuplicates: false,
+		CsvFilePath: strPtr("/valid/path/test.csv"),
+		AccountId: strPtr("test-account"),
+		SkipDuplicates: boolPtr(false),
 	}
 
 	resp, err := service.ProcessCSVFile(context.Background(), req)
