@@ -209,7 +209,8 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 
 	return &pb.ProcessCSVFileResponse{
 		Success: stats.SavedRecords > 0,
-		Message: fmt.Sprintf("Processed %d records from %d file(s)", stats.TotalRecords, fileCount),
+		Message: fmt.Sprintf("Processed %d records from %d file(s): %d saved, %d skipped, %d errors",
+			stats.TotalRecords, fileCount, stats.SavedRecords, stats.SkippedRecords, stats.ErrorRecords),
 		Stats:   stats,
 		Errors:  allErrors,
 	}, nil
@@ -238,7 +239,8 @@ func (s *DataProcessorService) ProcessCSVData(ctx context.Context, req *pb.Proce
 
 	return &pb.ProcessCSVDataResponse{
 		Success: stats.SavedRecords > 0,
-		Message: fmt.Sprintf("Processed %d records", stats.TotalRecords),
+		Message: fmt.Sprintf("Processed %d records: %d saved, %d skipped, %d errors",
+			stats.TotalRecords, stats.SavedRecords, stats.SkippedRecords, stats.ErrorRecords),
 		Stats:   stats,
 		Errors:  errors,
 	}, nil
