@@ -34,8 +34,9 @@ func (v *DefaultValidator) ValidateCSVFilePath(path string) error {
 
 // ValidateAccountID validates account ID
 func (v *DefaultValidator) ValidateAccountID(accountID string) error {
+	// account_id is optional
 	if accountID == "" {
-		return status.Error(codes.InvalidArgument, "account_id is required")
+		return nil
 	}
 	// Additional validation rules can be added here
 	if len(accountID) < 3 {

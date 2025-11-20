@@ -63,6 +63,73 @@ src/
 go test ./tests/...
 ```
 
+## 環境変数
+
+以下の環境変数でサービスの動作を制御できます：
+
+| 変数名 | 説明 | デフォルト値 | 例 |
+|--------|------|-------------|-----|
+| `GRPC_PORT` | gRPCサーバーのポート番号（優先） | 50051 | `50052` |
+| `ETC_PROCESSOR_PORT` | gRPCサーバーのポート番号 | 50051 | `50052` |
+| `ETC_PROCESSOR_DB_ADDR` | データベースサービスのアドレス | - | `localhost:50051` |
+| `SKIP_DUPLICATES` | 重複チェックの有効/無効 | `true` | `false`, `0` |
+| `CSV_BASE_PATH` | CSVファイルのベースパス（最新フォルダ自動検索） | - | `/data/csv` |
+
+### 使用例
+
+```bash
+# ポート番号を変更
+export GRPC_PORT=50052
+
+# 重複チェックを無効化
+export SKIP_DUPLICATES=false
+
+# データベース接続先を指定
+export ETC_PROCESSOR_DB_ADDR=localhost:50051
+
+# CSVファイルの自動検索を有効化
+# ベースパス内の最新フォルダから自動的にCSVファイルを探します
+export CSV_BASE_PATH=/data/csv_files
+
+# サーバー起動
+./etc_data_processor
+```
+
+#### CSV_BASE_PATH の動作
+
+`CSV_BASE_PATH`を設定すると、以下の動作になります：
+
+1. **ベースパス内のフォルダを検索**: `/data/csv_files/` 内の全フォルダをスキャン
+2. **最新フォルダを特定**: フォルダ名でソート（降順）して最新のフォルダを選択
+3. **CSVファイルを検索**: 最新フォルダ内の `.csv` ファイルを自動検出
+4. **自動処理**: 見つかったCSVファイルを処理
+
+例：
+```
+/data/csv_files/
+  ├── 20251118_120000/
+  │   └── etc_data.csv
+  └── 20251119_150000/  ← 最新フォルダ（自動選択）
+      └── etc_data.csv  ← このファイルが処理される
+```
+
+**注意**: `CSV_BASE_PATH`が設定されている場合、リクエストの`csv_file_path`パラメータは無視され、自動検索が優先されます。
+
+## API仕様
+
+### リクエストパラメータ
+
+#### ProcessCSVFile / ProcessCSVData
+
+| パラメータ | 型 | 必須 | デフォルト | 説明 |
+|-----------|-----|------|-----------|------|
+| `csv_file_path` | string | ✅ | - | CSVファイルのパス（ProcessCSVFileのみ） |
+| `csv_data` | string | ✅ | - | CSV文字列データ（ProcessCSVDataのみ） |
+| `account_id` | string | ❌ | - | アカウントID（3文字以上、将来のマルチテナント対応用） |
+| `skip_duplicates` | bool | ❌ | `true` | 重複チェック（環境変数`SKIP_DUPLICATES`で制御可能） |
+
+**注**: `account_id`はオプショナルです。空文字列を指定するか省略できます。
+
 ## 使用技術
 
 - **言語**: Go 1.21+

@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -16,6 +19,67 @@ import (
 const (
 	version = "1.0.0"
 )
+
+// getSkipDuplicatesDefault returns the default value for skip_duplicates
+// Can be controlled via SKIP_DUPLICATES environment variable (true/false)
+// Defaults to true if not set
+func getSkipDuplicatesDefault() bool {
+	skipDup := os.Getenv("SKIP_DUPLICATES")
+	if skipDup == "false" || skipDup == "0" {
+		return false
+	}
+	return true // Default to true
+}
+
+// resolveCSVFilePath resolves the CSV file path
+// If CSV_BASE_PATH is set, it finds the latest folder and CSV file within it
+// Otherwise, returns the provided path as-is
+func resolveCSVFilePath(providedPath string) (string, error) {
+	basePath := os.Getenv("CSV_BASE_PATH")
+	if basePath == "" {
+		// No base path configured, use provided path
+		return providedPath, nil
+	}
+
+	// Find the latest directory in base path
+	entries, err := os.ReadDir(basePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to read base path %s: %w", basePath, err)
+	}
+
+	// Filter directories and sort by modification time (newest first)
+	var dirs []os.DirEntry
+	for _, entry := range entries {
+		if entry.IsDir() {
+			dirs = append(dirs, entry)
+		}
+	}
+
+	if len(dirs) == 0 {
+		return "", fmt.Errorf("no directories found in base path: %s", basePath)
+	}
+
+	// Sort directories by name (descending) - assumes date-based naming
+	sort.Slice(dirs, func(i, j int) bool {
+		return dirs[i].Name() > dirs[j].Name()
+	})
+
+	latestDir := dirs[0].Name()
+	latestDirPath := filepath.Join(basePath, latestDir)
+
+	// Find CSV files in the latest directory
+	csvFiles, err := filepath.Glob(filepath.Join(latestDirPath, "*.csv"))
+	if err != nil {
+		return "", fmt.Errorf("failed to search for CSV files: %w", err)
+	}
+
+	if len(csvFiles) == 0 {
+		return "", fmt.Errorf("no CSV files found in latest directory: %s", latestDirPath)
+	}
+
+	// Return the first CSV file found
+	return csvFiles[0], nil
+}
 
 // DBClient interface for database operations
 type DBClient interface {
@@ -72,8 +136,21 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 		return nil, err
 	}
 
+	// Resolve CSV file path (may use CSV_BASE_PATH to find latest folder)
+	resolvedPath, err := resolveCSVFilePath(req.CsvFilePath)
+	if err != nil {
+		return &pb.ProcessCSVFileResponse{
+			Success: false,
+			Message: fmt.Sprintf("Failed to resolve CSV file path: %v", err),
+			Stats: &pb.ProcessingStats{
+				TotalRecords: 0,
+			},
+			Errors: []string{err.Error()},
+		}, nil
+	}
+
 	// Parse CSV file
-	records, err := s.parser.ParseFile(req.CsvFilePath)
+	records, err := s.parser.ParseFile(resolvedPath)
 	if err != nil {
 		return &pb.ProcessCSVFileResponse{
 			Success: false,
@@ -85,8 +162,11 @@ func (s *DataProcessorService) ProcessCSVFile(ctx context.Context, req *pb.Proce
 		}, nil
 	}
 
+	// Get skip_duplicates setting from environment or default
+	skipDuplicates := getSkipDuplicatesDefault()
+
 	// Process records
-	stats, errors := s.processRecords(ctx, records, req.AccountId, req.SkipDuplicates)
+	stats, errors := s.processRecords(ctx, records, req.AccountId, skipDuplicates)
 
 	return &pb.ProcessCSVFileResponse{
 		Success: stats.SavedRecords > 0,
@@ -111,8 +191,11 @@ func (s *DataProcessorService) ProcessCSVData(ctx context.Context, req *pb.Proce
 		return nil, status.Errorf(codes.InvalidArgument, "invalid CSV format: %v", err)
 	}
 
+	// Get skip_duplicates setting from environment or default
+	skipDuplicates := getSkipDuplicatesDefault()
+
 	// Process records
-	stats, errors := s.processRecords(ctx, records, req.AccountId, req.SkipDuplicates)
+	stats, errors := s.processRecords(ctx, records, req.AccountId, skipDuplicates)
 
 	return &pb.ProcessCSVDataResponse{
 		Success: stats.SavedRecords > 0,

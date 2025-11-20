@@ -64,9 +64,9 @@ func TestDefaultValidator(t *testing.T) {
 	})
 
 	t.Run("ValidateAccountID", func(t *testing.T) {
-		// Empty ID
-		if err := v.ValidateAccountID(""); err == nil {
-			t.Error("Expected error for empty account ID")
+		// Empty ID (now optional)
+		if err := v.ValidateAccountID(""); err != nil {
+			t.Errorf("Expected no error for empty account ID (optional): %v", err)
 		}
 
 		// Too short ID
@@ -168,14 +168,13 @@ func TestValidateProcessCSVFileRequest(t *testing.T) {
 			wantCode:  codes.InvalidArgument,
 		},
 		{
-			name: "empty account ID",
+			name: "empty account ID (now optional)",
 			req: &mockFileReq{
 				csvFilePath: validFile,
 				accountId:   "",
 			},
 			validator: handler.NewDefaultValidator(),
-			wantErr:   true,
-			wantCode:  codes.InvalidArgument,
+			wantErr:   false,
 		},
 		{
 			name: "file not found",
@@ -278,14 +277,13 @@ func TestValidateProcessCSVDataRequest(t *testing.T) {
 			wantCode:  codes.InvalidArgument,
 		},
 		{
-			name: "empty account ID",
+			name: "empty account ID (now optional)",
 			req: &mockDataReq{
 				csvData:   "valid csv data with sufficient length",
 				accountId: "",
 			},
 			validator: handler.NewDefaultValidator(),
-			wantErr:   true,
-			wantCode:  codes.InvalidArgument,
+			wantErr:   false,
 		},
 		{
 			name: "valid request",
